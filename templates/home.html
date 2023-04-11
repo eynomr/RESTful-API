@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>RESTful API</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">Welcome to My RESTful API Website</h1>
+      <p class="intro">You are already logged in!</p>
+    </div>
+    <div class="buttons">
+        <a href="{{ url_for('logout') }}" class="button">Log out!</a>
+      </div>
+  </body>
+</html>
+
+

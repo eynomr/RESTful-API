@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>RESTful API</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">Welcome to My RESTful API Website</h1>
+      <p class="intro">RESTful API using Flask that covers error
+        handling, authentication, and file handling. The API will have two types of routes - public
+        routes that can be accessed without authentication and protected admin routes that
+        require authentication. </p>
+    </div>
+    <div class="buttons">
+        <a href="{{ url_for('login') }}" class="button">Login</a>
+        <a href="{{ url_for('signup') }}" class="button">Sign Up</a>
+      </div>
+  </body>
+</html>
+
+
