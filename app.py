@@ -14,6 +14,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
+# App confiuration
 app.config['SECRET_KEY'] = '25f28838cef544dfabaef370d952ad02'
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.png', '.txt']
@@ -29,10 +30,12 @@ conn = pymysql.connect(
         )
 cur = conn.cursor()
 
+## Routes ##
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Decorator for authentication
 def token_required(func):
     @wraps(func)
     def decorated(*args, **kwargs):
@@ -48,6 +51,7 @@ def token_required(func):
         return func(*args, **kwargs)
     return decorated
 
+# Validate login with SQL DB
 def valid_login(username, password):
     print('hi', username)
     cur.execute('SELECT * FROM accounts WHERE username = % s AND password = % s', (username, password, ))
@@ -62,6 +66,7 @@ def valid_login(username, password):
         account = None
         return (False, account, msg)
     
+# Login using front end
 @app.route('/login', methods=['GET, POST'])
 def login():
     if request.method == 'POST':
@@ -75,6 +80,7 @@ def login():
             return redirect('home')
     return render_template('login.html')
 
+# API login
 @app.route('/api/login', methods = ['POST'])
 def api_login():
     msg = ''
@@ -99,6 +105,7 @@ def api_login():
     else:
         return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
+# home route
 @app.route('/home')
 def home():
      if 'loggedin' in session:
@@ -106,6 +113,7 @@ def home():
      else:
         return redirect('login')
 
+# logout route
 @app.route('/logout') 
 def logout():
     session.pop('loggedin', None)
@@ -113,6 +121,7 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+# sign up using front end
 @app.route('/signup', methods =['GET', 'POST'])
 def signup():
     msg = ''
@@ -137,19 +146,23 @@ def signup():
     return render_template('signup.html', msg = msg)
 
 
-
+# public data for API
 public_data = [{'id': 1, 'name': 'Public APIs'},
                {'id': 2, 'name': 'Pricing and Plans'},
                {'id': 3, 'name': 'Developer Documentation'}]
+
+# public route with no auth
 @app.route('/public', methods=['GET'])
 def public():
     return jsonify(public_data), 200
 
+# protected route 
 @app.route('/protected')
 @token_required
 def protected():
     return jsonify({'message': 'This is a protected endpoint!'})
 
+# uploading files
 @app.route('/fileupload', methods=['POST'])
 def upload_files():
     upload_file = request.files['file']
@@ -161,6 +174,7 @@ def upload_files():
         upload_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
         return jsonify({'message': 'File uploaded successfuly'})
 
+# list of all endpoints
 @app.route('/endpoints')
 def get_endpoints():
     endpoints = []
